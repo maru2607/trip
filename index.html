@@ -1,0 +1,571 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="今日のおでかけ">
+<meta name="theme-color" content="#1F3B2C">
+<title>今日のおでかけ</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#1F3B2C;
+    --ink-soft:#3D5A4B;
+    --paper:#EEF0E5;
+    --paper-deep:#E4E7D7;
+    --card:#FBFAF3;
+    --mustard:#D9A441;
+    --mustard-deep:#B9822B;
+    --sky:#4C7A96;
+    --brick:#8C3B2E;
+    --line: rgba(31,59,42,0.14);
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background:
+      radial-gradient(ellipse at top left, rgba(76,122,150,0.08), transparent 55%),
+      repeating-radial-gradient(circle at 20% 10%, transparent 0, transparent 38px, var(--line) 39px, transparent 40px),
+      var(--paper);
+    color:var(--ink);
+    font-family:'Zen Kaku Gothic New', sans-serif;
+    -webkit-font-smoothing:antialiased;
+    padding-bottom:60px;
+  }
+  h1,h2,.mincho{font-family:'Shippori Mincho', serif;}
+
+  header.board{
+    margin:18px 14px 20px;
+    padding:22px 20px 20px;
+    background:var(--ink);
+    color:var(--paper);
+    border-radius:6px;
+    position:relative;
+    box-shadow:0 10px 22px rgba(31,59,42,0.25);
+    border:1px solid rgba(255,255,255,0.06);
+  }
+  header.board::before{
+    content:"";
+    position:absolute; left:50%; top:-12px; transform:translateX(-50%);
+    width:6px; height:26px; background:#8a7350; border-radius:2px;
+  }
+  .eyebrow{
+    font-size:11px; letter-spacing:.24em; color:var(--mustard);
+    text-transform:uppercase; margin-bottom:6px; font-weight:700;
+  }
+  header.board h1{
+    font-size:24px; line-height:1.4; margin:0 0 4px; font-weight:700;
+  }
+  header.board .sub{
+    font-size:12.5px; color:rgba(238,240,229,0.72); margin-bottom:16px;
+  }
+  .weather-strip{
+    display:flex; align-items:center; gap:14px;
+    border-top:1px dashed rgba(238,240,229,0.28);
+    padding-top:14px; margin-top:4px;
+  }
+  .w-icon{font-size:34px; line-height:1;}
+  .w-main{flex:1;}
+  .w-temp{font-size:26px; font-weight:700; font-family:'Shippori Mincho',serif;}
+  .w-desc{font-size:12px; color:rgba(238,240,229,0.75); margin-top:2px;}
+  .w-season{
+    font-size:11px; background:var(--mustard); color:var(--ink);
+    padding:3px 10px; border-radius:100px; font-weight:700; white-space:nowrap;
+  }
+  .w-loading{font-size:13px; color:rgba(238,240,229,0.7);}
+  .w-note{font-size:10.5px; color:rgba(238,240,229,0.55); margin-top:8px;}
+
+  .mode-toggle{display:flex; gap:6px; margin-top:12px;}
+  .mode-btn{
+    flex:1; padding:7px; border-radius:5px; border:1px solid rgba(238,240,229,0.35);
+    background:transparent; color:rgba(238,240,229,0.8); font-family:inherit;
+    font-size:11.5px; font-weight:700; cursor:pointer;
+  }
+  .mode-btn.active{background:var(--mustard); color:var(--ink); border-color:var(--mustard);}
+
+  .manual-panel{margin-top:12px; display:none;}
+  .manual-panel.show{display:block;}
+  .manual-row{display:flex; gap:8px; margin-bottom:8px;}
+  .manual-field{flex:1;}
+  .manual-field label{font-size:10.5px; color:rgba(238,240,229,0.7); display:block; margin-bottom:4px;}
+  .manual-field input, .manual-field select{
+    width:100%; padding:8px; border-radius:5px; border:1px solid rgba(238,240,229,0.3);
+    background:rgba(238,240,229,0.08); color:var(--paper); font-family:inherit; font-size:13px;
+  }
+  .manual-field select option{color:#111;}
+
+  .filters{margin:0 14px 18px;}
+  .filter-block{margin-bottom:14px;}
+  .filter-label{
+    font-size:11px; letter-spacing:.1em; color:var(--ink-soft);
+    font-weight:700; margin-bottom:8px; display:flex; align-items:center; gap:6px;
+  }
+  .filter-label::before{content:"◆"; color:var(--mustard-deep); font-size:9px;}
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap;}
+  .chip{
+    appearance:none; border:1.5px solid var(--ink); background:var(--card);
+    color:var(--ink); font-family:inherit; font-size:13.5px; font-weight:700;
+    padding:9px 16px; border-radius:100px; cursor:pointer;
+    transition:transform .12s ease;
+  }
+  .chip:active{transform:scale(0.96);}
+  .chip.active{background:var(--ink); color:var(--paper);}
+  .go-btn{
+    width:100%; margin-top:6px; padding:14px; border:none; border-radius:6px;
+    background:var(--mustard); color:var(--ink); font-weight:900; font-size:15.5px;
+    letter-spacing:.04em; cursor:pointer; box-shadow:0 6px 14px rgba(217,164,65,0.35);
+  }
+  .go-btn:active{transform:translateY(1px);}
+
+  #results{margin:0 14px;}
+  .group-title{
+    font-size:13.5px; font-weight:900; color:var(--ink);
+    margin:22px 2px 12px; padding-bottom:6px; border-bottom:2px solid var(--ink);
+  }
+  .group-title.secondary{color:var(--ink-soft); border-bottom:1.5px dashed var(--line);}
+  .result-meta{
+    font-size:12px; color:var(--ink-soft); margin:4px 2px 6px; font-weight:700;
+  }
+  .empty-note{
+    font-size:13px; color:var(--ink-soft); text-align:center; padding:30px 10px;
+    border:1.5px dashed var(--line); border-radius:8px; background:var(--card);
+  }
+
+  .post{
+    position:relative;
+    background:var(--card);
+    border:1.5px solid var(--ink);
+    border-radius:4px 14px 4px 4px;
+    margin-bottom:16px;
+    padding:16px 16px 14px 16px;
+    box-shadow:3px 3px 0 var(--mustard);
+  }
+  .post.dim{opacity:.72; box-shadow:3px 3px 0 var(--line);}
+  .post:nth-child(even){box-shadow:3px 3px 0 var(--sky);}
+  .post.dim:nth-child(even){box-shadow:3px 3px 0 var(--line);}
+  .post-top{display:flex; justify-content:space-between; align-items:flex-start; gap:10px;}
+  .post-name{font-size:17px; font-weight:700; font-family:'Shippori Mincho',serif; line-height:1.4;}
+  .post-area{font-size:11.5px; color:var(--ink-soft); margin-top:2px;}
+  .post-time{
+    flex-shrink:0; text-align:center; background:var(--ink); color:var(--paper);
+    border-radius:4px; padding:6px 10px; min-width:54px;
+  }
+  .post-time .n{font-size:16px; font-weight:900; font-family:'Shippori Mincho',serif;}
+  .post-time .u{font-size:9px; letter-spacing:.06em;}
+  .post-desc{font-size:13px; line-height:1.7; color:var(--ink); margin:10px 0 10px;}
+  .post-tags{display:flex; gap:6px; flex-wrap:wrap; margin-bottom:10px;}
+  .tag{
+    font-size:11px; padding:3px 9px; border-radius:100px; font-weight:700;
+    background:var(--paper-deep); color:var(--ink-soft); border:1px solid var(--line);
+  }
+  .tag.reason{background:var(--mustard); color:var(--ink); border-color:transparent;}
+  .post-link{
+    display:inline-block; font-size:12.5px; font-weight:700; color:var(--sky);
+    text-decoration:none; border-bottom:1.5px solid var(--sky);
+  }
+
+  footer{
+    margin:30px 14px 10px; text-align:center; font-size:10.5px; color:var(--ink-soft); opacity:.7;
+  }
+</style>
+</head>
+<body>
+
+<header class="board">
+  <div class="eyebrow">Aobadai, Yokohama — Day Trip Board</div>
+  <h1>今日のおでかけ</h1>
+  <div class="sub">青葉台駅発、きょうの気候にあう日帰り先を案内します</div>
+  <div class="weather-strip" id="weatherStrip">
+    <div class="w-loading">現在の天気を取得中…</div>
+  </div>
+  <div class="mode-toggle">
+    <button class="mode-btn active" id="autoModeBtn">自動取得</button>
+    <button class="mode-btn" id="manualModeBtn">手動入力</button>
+  </div>
+  <div class="manual-panel" id="manualPanel">
+    <div class="manual-row">
+      <div class="manual-field">
+        <label>気温（℃）</label>
+        <input type="number" id="manualTemp" value="20">
+      </div>
+      <div class="manual-field">
+        <label>天気</label>
+        <select id="manualWeather">
+          <option value="sunny">晴れ</option>
+          <option value="cloudy">曇り</option>
+          <option value="rain">雨</option>
+          <option value="snow">雪</option>
+        </select>
+      </div>
+    </div>
+    <div class="w-note">日付は端末の今日の日付から季節を自動判定します。</div>
+  </div>
+</header>
+
+<div class="filters">
+  <div class="filter-block">
+    <div class="filter-label">移動手段</div>
+    <div class="chip-row" id="transportRow">
+      <button class="chip active" data-transport="train">電車</button>
+      <button class="chip" data-transport="car">車</button>
+    </div>
+  </div>
+  <div class="filter-block">
+    <div class="filter-label">片道の所要時間</div>
+    <div class="chip-row" id="timeRow">
+      <button class="chip" data-time="30">30分以内</button>
+      <button class="chip active" data-time="60">1時間以内</button>
+      <button class="chip" data-time="120">2時間以内</button>
+      <button class="chip" data-time="180">3時間以内</button>
+      <button class="chip" data-time="240">4時間以内</button>
+    </div>
+  </div>
+  <div class="filter-block">
+    <div class="filter-label">気分</div>
+    <div class="chip-row" id="moodRow">
+      <button class="chip active" data-mood="all">おまかせ</button>
+      <button class="chip" data-mood="walk">散歩・散策</button>
+      <button class="chip" data-mood="hike">山・軽登山</button>
+      <button class="chip" data-mood="food">食べ歩き</button>
+      <button class="chip" data-mood="onsen">温泉・スパ</button>
+      <button class="chip" data-mood="kanko">観光地</button>
+    </div>
+  </div>
+  <button class="go-btn" id="goBtn">きょうのおすすめを見る</button>
+</div>
+
+<div id="results"></div>
+
+<footer>所要時間は青葉台駅発の目安です。交通状況・乗換により前後します。</footer>
+
+<script>
+const LAT = 35.5568, LON = 139.5008;
+
+const SPOTS = [
+ {name:"寺家ふるさと村", area:"横浜市青葉区", train:30, car:15, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"青葉区内に残る里山風景。棚田と谷戸の小道をのんびり歩ける、いちばん手軽な自然散策先。", maps:"寺家ふるさと村"},
+ {name:"新治市民の森", area:"横浜市緑区", train:25, car:20, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"雑木林と田園が広がる市民の森。軽いアップダウンがあり、山登りの足慣らしにちょうどいい。", maps:"新治市民の森"},
+ {name:"四季の森公園", area:"横浜市緑区", train:25, car:20, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"谷戸地形をいかした県立公園。田んぼ・池・雑木林があり、大きな公園でゆったり歩きたい日に。", maps:"県立四季の森公園"},
+ {name:"東高根森林公園", area:"川崎市宮前区", train:25, car:20, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"シダ植物の茂る貴重な自然林が残る公園。木陰が多く、暑い日でも歩きやすい。", maps:"東高根森林公園"},
+ {name:"小山田緑地", area:"町田市", train:35, car:25, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"谷戸と雑木林が広がる大きな都立公園。人が少なく静かに歩きたい日向き。", maps:"小山田緑地"},
+ {name:"町田薬師池公園", area:"町田市", train:45, car:40, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"池を囲む日本庭園と菖蒲田、古民家がある「四季彩の杜」。四季を通じて花や紅葉が楽しめる大きめの公園。", maps:"薬師池公園"},
+ {name:"生田緑地", area:"川崎市多摩区", train:40, car:35, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"岡本太郎美術館や日本民家園を含む広大な緑地。散策と観光を一度に楽しめる。", maps:"生田緑地"},
+ {name:"座間谷戸山公園", area:"座間市", train:40, car:30, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"谷戸地形をそのまま生かした自然公園。木道や湿性生態園があり、身近な自然観察に向く。", maps:"座間谷戸山公園"},
+ {name:"こどもの国", area:"横浜市青葉区", train:20, car:20, season:["spring","summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"牧場と丘陵地の広大な公園。芝生の丘を歩くだけでも気持ちがいい、天気の良い日向き。", maps:"横浜市 こどもの国"},
+ {name:"よこはま動物園ズーラシア", area:"横浜市旭区", train:35, car:30, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"広大な敷地を歩きながら世界の動物を見られる、大きな公園感覚で楽しめる動物園。", maps:"よこはま動物園ズーラシア"},
+ {name:"根岸森林公園", area:"横浜市中区", train:45, car:40, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk"], desc:"元競馬場の広い丘陵地公園。春の桜と見晴らしの良い芝生が魅力の、都会の中の大きな公園。", maps:"根岸森林公園"},
+ {name:"泉の森公園", area:"大和市", train:35, car:30, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"引地川源流の湧水地を中心にした自然公園。水辺の遊歩道が涼しく、初夏〜秋に歩きやすい。", maps:"泉の森 大和市"},
+ {name:"相模原公園", area:"相模原市", train:45, car:35, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk","kanko"], desc:"広い芝生と温室、フランス式庭園が広がる公園。季節の花壇めぐりがのんびりできる。", maps:"相模原公園"},
+ {name:"昭和記念公園", area:"立川市", train:70, car:60, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"広さ日本有数の国営公園。花畑や大芝生、林間の道を一日かけて歩き回れる。", maps:"国営昭和記念公園"},
+ {name:"日本民家園", area:"川崎市多摩区", train:35, car:30, season:["autumn","spring"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:false, cat:["walk","kanko"], desc:"古民家が並ぶ野外博物館。雨の日でも屋根のある建物を巡りながら散策できる。", maps:"川崎市立日本民家園"},
+ {name:"川崎大師", area:"川崎市川崎区", train:45, car:45, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["food","kanko"], desc:"参道の飴切りやくずもちなど食べ歩きが楽しい門前町。アーケードもあり雨天でも動きやすい。", maps:"川崎大師"},
+ {name:"三溪園", area:"横浜市中区", train:45, car:40, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk","kanko"], desc:"池泉回遊式の日本庭園。春の梅・桜、秋の紅葉と、季節ごとに表情を変える名園。", maps:"三溪園"},
+ {name:"みなとみらい・山下公園", area:"横浜市中区", train:35, car:35, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["walk","food","kanko"], desc:"港沿いの散策と食べ歩きを両方楽しめる定番コース。天気を選ばず動けるのが強み。", maps:"横浜 山下公園"},
+ {name:"横浜中華街", area:"横浜市中区", train:35, car:35, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["food","kanko"], desc:"食べ歩きグルメの定番。天候に左右されず、短時間でもがっつり楽しめる。", maps:"横浜中華街"},
+ {name:"横浜みなとみらい万葉倶楽部", area:"横浜市西区", train:35, car:35, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"みなとみらい駅すぐの天然温泉スパ。屋上には港の夜景を望む足湯庭園もあり、観光と組み合わせやすい。", maps:"横浜みなとみらい万葉倶楽部"},
+ {name:"万葉の湯（町田）", area:"町田市", train:30, car:25, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"湯河原から運ぶ天然温泉を使った大型日帰り温泉。露天風呂や岩盤浴も充実したスーパー銭湯クラスの施設。", maps:"東京・湯河原温泉 万葉の湯 町田"},
+ {name:"竜泉寺の湯 川崎", area:"川崎市麻生区", train:30, car:20, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"岩盤浴やサウナも充実した大型スーパー銭湯。青葉区から最も近い部類の日帰り温泉。", maps:"竜泉寺の湯 川崎水沢店"},
+ {name:"城山湖・津久井湖", area:"相模原市", train:65, car:50, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"湖畔の遊歩道とダム周辺の軽い散策。人が少なく静かに歩きたいときに向く穴場。", maps:"城山湖"},
+ {name:"弘法山公園", area:"秦野市", train:65, car:60, season:["spring","autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"丹沢の入口にある軽登山コース。春は桜、尾根歩きの気持ちよさを手軽に味わえる。", maps:"弘法山公園"},
+ {name:"六道山公園・狭山丘陵", area:"瑞穂町", train:60, car:50, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"里山風景が残る狭山丘陵の一角。展望台からの眺めがよく、気軽な丘陵ハイクにちょうどいい。", maps:"六道山公園"},
+ {name:"宮ヶ瀬湖", area:"愛川町・清川村", train:70, car:55, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"神奈川県内最大級のダム湖。湖畔の遊歩道とダム見学、水の郷散策が組み合わせられる。", maps:"宮ヶ瀬湖"},
+ {name:"中津川渓谷", area:"愛川町・清川村", train:75, car:60, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"宮ヶ瀬湖上流の渓谷。水量豊かな清流沿いを歩ける、夏に涼を求めるのにちょうどいい穴場。", maps:"中津川渓谷 愛川"},
+ {name:"森の湯 愛川店", area:"愛川町", train:70, car:55, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"宮ヶ瀬湖にほど近いスーパー銭湯。中津川渓谷散策とセットで立ち寄れる。", maps:"森の湯 愛川店"},
+ {name:"秦野天然温泉 さざんか", area:"秦野市", train:65, car:55, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"地元で人気の天然温泉スーパー銭湯。丹沢帰りに立ち寄りやすい立地。", maps:"秦野天然温泉さざんか"},
+ {name:"万葉の湯（秦野）", area:"秦野市", train:65, car:55, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"丹沢の入口、秦野にある天然温泉の日帰り施設。弘法山ハイキングとあわせて汗を流すのにちょうどいい。", maps:"はだの・湯河原温泉 万葉の湯"},
+ {name:"鎌倉（大仏ハイキングコース）", area:"鎌倉市", train:55, car:60, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk","hike","food"], desc:"寺社巡りと軽いハイキングコース、小町通りの食べ歩きまで一日で楽しめる王道コース。", maps:"鎌倉 大仏ハイキングコース"},
+ {name:"江の島", area:"藤沢市", train:60, car:65, season:["summer","spring"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","food","onsen","kanko"], desc:"参道の食べ歩きから展望灯台、江の島岩屋の散策、江の島温泉まで海辺で一日遊べる。", maps:"江の島"},
+ {name:"逗子海岸・葉山", area:"逗子市・葉山町", train:75, car:70, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","food"], desc:"海沿いの散歩と海鮮の食べ歩き。夏の晴れた日に爽快感を求めるならここ。", maps:"逗子海岸"},
+ {name:"鷹取山", area:"横須賀市", train:70, car:60, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"切り立った岩肌が特徴的な低山。山頂からは東京湾を一望でき、気軽な岩場歩きが楽しめる。", maps:"鷹取山公園"},
+ {name:"大楠山", area:"横須賀市", train:90, car:80, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"三浦半島最高峰、といっても標高241mの気軽な山。山頂から海が見渡せる。", maps:"大楠山"},
+ {name:"三浦海岸・城ヶ島", area:"三浦市", train:90, car:90, season:["summer","winter"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","food"], desc:"岩場の磯歩きと新鮮なまぐろの食べ歩き。冬は水仙、夏は海風が気持ちいい。", maps:"城ヶ島"},
+ {name:"大山（伊勢原）", area:"伊勢原市", train:90, car:70, season:["autumn","summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike","onsen"], desc:"ケーブルカーもある信仰の山。中腹までの参道歩きから本格ハイクまで選べ、下山後は大山とうふと温泉。", maps:"大山 伊勢原"},
+ {name:"大雄山最乗寺", area:"南足柄市", train:75, car:65, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"樹齢数百年の杉並木参道が続く古刹。木陰が多く、夏でも涼しく歩ける静かな山寺。", maps:"大雄山最乗寺"},
+ {name:"洒水の滝・松田山", area:"松田町", train:90, car:75, season:["winter","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk","kanko"], desc:"日本の滝百選のひとつと展望ハーブガーデン。冬は河津桜と富士山の眺めが名物。", maps:"松田山ハーブガーデン"},
+ {name:"寄水源林（やどりき）", area:"松田町", train:90, car:75, season:["spring","autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["walk","hike"], desc:"丹沢の水源の森。早春のロウバイ、渓流沿いの気持ちよい遊歩道が魅力。", maps:"寄水源林"},
+ {name:"大野山", area:"山北町", train:95, car:80, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"牧場跡の草原が広がる山頂から富士山を一望。急な登りが少なく、パノラマを楽しみやすい軽登山。", maps:"大野山 山北町"},
+ {name:"丹沢湖", area:"山北町", train:100, car:85, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"丹沢山地に囲まれたダム湖。湖畔の遊歩道は木陰が多く、夏でも比較的涼しい。", maps:"丹沢湖"},
+ {name:"中川温泉", area:"山北町", train:105, car:90, season:["winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"丹沢の谷あいにひっそりとある小さな温泉地。静かに湯につかりたい寒い日に。", maps:"中川温泉"},
+ {name:"湯河原惣湯", area:"湯河原町", train:95, car:85, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","kanko"], desc:"日帰り湯とカフェ・ギャラリーが一体になった、こぢんまりとした湯河原の新名所。散策とセットで楽しみやすい。", maps:"湯河原惣湯"},
+ {name:"幕山公園", area:"湯河原町", train:95, car:85, season:["winter","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike","walk"], desc:"早春の梅林と、山頂まで気軽に登れる軽登山コース。ロッククライミングの名所としても知られる。", maps:"幕山公園"},
+ {name:"高尾山", area:"八王子市", train:100, car:80, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"初心者向け登山道が整った定番の山。山頂からの富士山や、秋の紅葉が見どころ。", maps:"高尾山"},
+ {name:"陣馬山", area:"八王子市・相模原市", train:110, car:100, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"山頂の白馬の像で知られる、高尾山より静かな尾根歩きが楽しめる山。", maps:"陣馬山"},
+ {name:"高水三山", area:"青梅市", train:100, car:90, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"青梅の低山縦走コース。危険箇所が少なく、軽い山登りの練習にちょうどいい三山巡り。", maps:"高水三山"},
+ {name:"丹沢・塔ノ岳", area:"秦野市", train:100, car:90, season:["autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"本格的な登りごたえのある丹沢の主峰。しっかり体を動かしたい日向けの一座。", maps:"塔ノ岳"},
+ {name:"箱根", area:"箱根町", train:100, car:90, season:["autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["hike","walk","onsen","kanko"], desc:"大涌谷の散策から芦ノ湖畔の遊歩道、そして温泉まで。曇りや小雨でも湯につかれば満足度が高い。", maps:"箱根"},
+ {name:"箱根湯寮", area:"箱根町", train:95, car:85, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen"], desc:"箱根湯本の高台にある離れ形式の日帰り温泉。木造の露天風呂を何種類も湯めぐりできる、大人向けのスパ。", maps:"箱根湯寮"},
+ {name:"御岳渓谷（青梅）", area:"青梅市", train:95, car:85, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"多摩川沿いの遊歩道が続く渓谷。カヌーで賑わう夏は水辺が涼しく、川音を聞きながら歩ける。", maps:"御岳渓谷"},
+ {name:"秋川渓谷", area:"あきる野市", train:100, car:90, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"清流沿いの渓谷歩き。夏は川遊びで涼をとれる、都心から近い渓谷リゾート。", maps:"秋川渓谷"},
+ {name:"奥多摩・御岳山", area:"奥多摩町", train:110, car:90, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike"], desc:"渓谷沿いのハイキングと、ケーブルカーで登れる御岳山の参道歩き。夏は川のせせらぎで涼しい。", maps:"御岳山 奥多摩"},
+ {name:"鳩ノ巣渓谷", area:"奥多摩町", train:115, car:100, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"エメラルドグリーンの淵が美しい、多摩川上流の渓谷歩き。奥多摩の中でも静かな穴場。", maps:"鳩ノ巣渓谷"},
+ {name:"日原鍾乳洞", area:"奥多摩町", train:130, car:120, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:true, cold:false, cat:["walk","kanko"], desc:"関東でも屈指の規模を誇る鍾乳洞。年間を通して洞内は10℃前後で、夏の避暑にも雨の日にもぴったり。", maps:"日原鍾乳洞"},
+ {name:"三頭山", area:"檜原村", train:140, car:130, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike"], desc:"奥多摩の奥、檜原村の山。ブナ林と三頭大滝があり、夏でも涼しく歩ける。", maps:"三頭山"},
+ {name:"檜原都民の森", area:"檜原村", train:145, car:130, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"標高1000m前後の森林エリア。整備された遊歩道が多く、夏の避暑ハイクにも向く。", maps:"檜原都民の森"},
+ {name:"秩父", area:"秩父市", train:110, car:100, season:["autumn","winter"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike","food","kanko"], desc:"武甲山を望む町並みと、秩父三十四観音の一部を歩く軽ハイク。秋は紅葉、冬はアイスキャンドル。", maps:"秩父"},
+ {name:"長瀞", area:"長瀞町", train:110, car:100, season:["spring","autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["walk","food","kanko"], desc:"荒川沿いの岩畳を散策。春は桜、秋は紅葉が渓谷を彩り、川沿いの茶屋で食べ歩きもできる。", maps:"長瀞 岩畳"},
+ {name:"橋立鍾乳洞", area:"長瀞町", train:110, car:100, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:true, cold:false, cat:["walk","kanko"], desc:"長瀞のもうひとつの見どころ、切り立った岩壁に口を開ける鍾乳洞。長瀞散策とあわせて回れる。", maps:"橋立鍾乳洞"},
+ {name:"巾着田", area:"日高市", train:80, car:65, season:["autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk"], desc:"高麗川が蛇行して作る円形の地形。秋は一面の曼珠沙華で有名な、季節限定の絶景散歩道。", maps:"巾着田"},
+ {name:"三峯神社", area:"秩父市", train:140, car:130, season:["autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike","kanko"], desc:"奥秩父の山中にある古社。参道の杉並木と紅葉が美しく、パワースポットとしても人気。", maps:"三峯神社"},
+ {name:"川越（小江戸）", area:"川越市", train:100, car:90, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["walk","food","kanko"], desc:"蔵造りの町並みを食べ歩きしながら散策。アーケードもあり天候の影響を受けにくい。", maps:"川越 小江戸"},
+ {name:"猿橋・葛野川渓谷", area:"大月市", train:110, car:110, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["walk","kanko"], desc:"日本三奇橋のひとつ猿橋と、その下を流れる渓谷。橋のたもとから見上げる紅葉が見事。", maps:"猿橋"},
+ {name:"岩殿山", area:"大月市", train:110, car:100, season:["autumn","spring"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike"], desc:"岩壁がそびえる大月市のシンボル的な山。山頂から富士山と大月市街を見渡せる軽登山コース。", maps:"岩殿山"},
+ {name:"鋸山", area:"千葉県富津市", train:150, car:110, season:["autumn","winter"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike","kanko"], desc:"地獄のぞみで知られる、岩を削った石切場跡と山頂の展望が名物のユニークな山。", maps:"鋸山"},
+ {name:"養老渓谷", area:"千葉県大多喜町", train:170, car:150, season:["autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["walk","hike"], desc:"千葉県唯一の渓谷。粟又の滝周辺の紅葉が見事で、都心からも意外と行きやすい。", maps:"養老渓谷"},
+ {name:"マザー牧場", area:"千葉県富津市", train:160, car:120, season:["spring","summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"房総の高台に広がる牧場。花畑や動物とのふれあいを兼ねた広々した散策ができる。", maps:"マザー牧場"},
+ {name:"濃溝の滝・清水渓流公園", area:"千葉県君津市", train:170, car:140, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk"], desc:"洞窟から差す光が話題になった清流公園。夏は木陰と水辺で涼しく過ごせる。", maps:"濃溝の滝"},
+ {name:"大山千枚田", area:"千葉県鴨川市", train:null, car:170, season:["spring","autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["walk","kanko"], desc:"日本の棚田百選のひとつ。田植えの頃や秋の実りの季節、里山の風景がいちばん美しい。", maps:"大山千枚田"},
+ {name:"犬吠埼", area:"千葉県銚子市", train:180, car:170, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"関東最東端の岬。白亜の灯台と太平洋の絶景、日本一早い初日の出でも知られる。", maps:"犬吠埼"},
+ {name:"真鶴・湯河原", area:"真鶴町・湯河原町", train:100, car:85, season:["winter"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:true, cat:["walk","onsen"], desc:"真鶴半島の照葉樹の森を歩いたあと、湯河原温泉で冷えた体を温める、寒い季節向けのコース。", maps:"湯河原温泉"},
+ {name:"熱海・伊豆", area:"熱海市・伊東市", train:100, car:110, season:["winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","walk","food","kanko"], desc:"海辺の温泉地。商店街の食べ歩きと温泉を組み合わせられ、雨や寒さでも楽しみやすい。", maps:"熱海温泉"},
+ {name:"北川温泉・黒根岩風呂", area:"静岡県東伊豆町", train:130, car:140, season:["winter"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:true, cat:["onsen"], desc:"波打ち際にある小さな公営露天風呂。海に浸かっているような開放感が味わえる、こぢんまりとした穴場の湯。", maps:"北川温泉 黒根岩風呂"},
+ {name:"修善寺", area:"伊豆市", train:130, car:130, season:["autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","walk","kanko"], desc:"竹林の小径と温泉街が一体になった伊豆の古湯。雨の日でも風情を楽しめる。", maps:"修善寺温泉"},
+ {name:"河津七滝", area:"河津町", train:150, car:160, season:["winter","summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"7つの滝をめぐる遊歩道。冬は河津桜、夏は滝の水しぶきで涼める渓谷散策コース。", maps:"河津七滝"},
+ {name:"三島スカイウォーク・柿田川湧水群", area:"三島市・清水町", train:100, car:100, season:["spring","summer","autumn","winter"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"日本最大級の吊り橋からの富士山と、澄んだ湧水が流れる柿田川の散策路。", maps:"柿田川湧水群"},
+ {name:"ほったらかし温泉", area:"山梨県山梨市", train:140, car:120, season:["autumn","winter"], weather:["sunny"], rainOk:false, hot:false, cold:true, cat:["onsen","kanko"], desc:"甲府盆地と富士山を見渡す露天風呂。空気の澄んだ秋冬の晴れた日は特に眺めがいい。", maps:"ほったらかし温泉"},
+ {name:"昇仙峡", area:"甲府市", train:130, car:110, season:["autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["walk","hike"], desc:"渓谷沿いの遊歩道と奇岩、ロープウェイ山頂からの眺め。秋の紅葉が特に見事。", maps:"昇仙峡"},
+ {name:"清里高原", area:"北杜市", train:150, car:150, season:["summer"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"標高1400mの高原リゾート。牧場と森の散策路が広がり、真夏でも涼しく過ごせる避暑地。", maps:"清里高原"},
+ {name:"河口湖・富士五湖", area:"山梨県富士河口湖町", train:150, car:130, season:["autumn","winter"], weather:["sunny"], rainOk:false, hot:false, cold:true, cat:["walk","hike","onsen","kanko"], desc:"湖畔遊歩道から富士山を望む。空気が澄む秋冬の晴れた日が最も美しい、遠出向けの一日。", maps:"河口湖"},
+ {name:"山中湖・忍野八海", area:"山梨県山中湖村・忍野村", train:150, car:140, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","kanko"], desc:"富士山麓の湖と湧水の里。標高が高く夏でも涼しく、のんびり歩ける観光地。", maps:"忍野八海"},
+ {name:"軽井沢", area:"長野県軽井沢町", train:140, car:150, season:["summer"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","food","kanko"], desc:"標高1000mの避暑地。旧軽井沢銀座の食べ歩きと、白樺林の散策路が真夏でも涼しい。", maps:"軽井沢"},
+ {name:"蓼科高原・白樺湖", area:"長野県茅野市・立科町", train:170, car:170, season:["summer"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"標高1400mを超える高原と湖。避暑地として名高く、真夏でも爽やかな空気の中を歩ける。", maps:"白樺湖"},
+ {name:"車山高原・霧ヶ峰", area:"長野県諏訪市", train:170, car:170, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike"], desc:"リフトで登れる高原の山。ニッコウキスゲなど高山植物が広がり、夏でも涼しい軽登山コース。", maps:"霧ヶ峰"},
+ {name:"富士見高原", area:"長野県富士見町", train:160, car:160, season:["summer"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"八ヶ岳山麓の高原リゾート。花畑と森の散策路があり、夏の避暑先として静かに過ごせる。", maps:"富士見高原"},
+ {name:"上高地", area:"長野県松本市", train:null, car:230, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike","walk"], desc:"梓川と穂高連峰が織りなす特別名勝。標高1500mの別天地で、真夏でも涼しく歩ける。", maps:"上高地"},
+ {name:"美ヶ原高原", area:"長野県松本市", train:null, car:210, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"360度の大パノラマが広がる高原台地。牛が放牧された草原をのんびり歩ける避暑地。", maps:"美ヶ原高原"},
+ {name:"日光", area:"栃木県日光市", train:170, car:160, season:["autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["hike","walk","kanko"], desc:"華厳の滝や中禅寺湖畔の散策。秋の紅葉シーズンは特に見応えがある、少し足を延ばす日帰り先。", maps:"日光"},
+ {name:"奥日光・戦場ヶ原", area:"栃木県日光市", train:180, car:175, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike","walk"], desc:"標高1400mの湿原を巡る木道コース。夏でも涼しく、避暑を兼ねたハイキングにぴったり。", maps:"戦場ヶ原"},
+ {name:"鬼怒川温泉", area:"栃木県日光市", train:195, car:190, season:["autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","kanko"], desc:"渓谷沿いに温泉街が広がる、日光の奥にある温泉地。紅葉と湯めぐりを一緒に楽しめる。", maps:"鬼怒川温泉"},
+ {name:"那須", area:"栃木県那須町", train:180, car:170, season:["summer","autumn"], weather:["sunny","cloudy"], rainOk:true, hot:true, cold:true, cat:["hike","onsen"], desc:"那須高原の牧場散策や茶臼岳の軽登山、そして那須温泉郷。標高が高く夏でも涼しい。", maps:"那須高原"},
+ {name:"塩原温泉・塩原渓谷", area:"栃木県那須塩原市", train:180, car:170, season:["autumn","winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","hike"], desc:"渓谷沿いの遊歩道「もみじ谷大吊橋」と温泉街。紅葉と湯めぐりを一緒に楽しめる。", maps:"塩原温泉"},
+ {name:"伊香保温泉", area:"群馬県渋川市", train:160, car:150, season:["winter"], weather:["sunny","cloudy","rain","snow"], rainOk:true, hot:false, cold:true, cat:["onsen","walk","kanko"], desc:"365段の石段街が名物の温泉地。寒い季節に石段を上り下りしてから湯につかりたい日に。", maps:"伊香保温泉"},
+ {name:"榛名湖・榛名山", area:"群馬県高崎市", train:170, car:160, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["walk","hike"], desc:"カルデラ湖の榛名湖畔を歩き、余力があれば榛名富士へ軽登山。標高が高く夏も過ごしやすい。", maps:"榛名湖"},
+ {name:"谷川岳・水上温泉", area:"群馬県みなかみ町", train:210, car:200, season:["summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:true, cat:["hike","onsen"], desc:"ロープウェイで登れる百名山と、下山後の水上温泉。標高が高く真夏でも涼しい。", maps:"谷川岳"},
+ {name:"川原湯温泉・八ッ場ダム", area:"群馬県長野原町", train:210, car:200, season:["winter"], weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:true, cat:["onsen","kanko"], desc:"ダム湖と温泉街を一緒に楽しめる、群馬の少し奥まったエリア。静かに一日過ごしたい遠出向け。", maps:"川原湯温泉"},
+ {name:"尾瀬ヶ原", area:"群馬県片品村", train:null, car:230, season:["summer"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["hike","walk"], desc:"日本を代表する高層湿原。木道を歩く本格ハイキングで、夏でも涼しい別世界が広がる。", maps:"尾瀬ヶ原"},
+ {name:"草津温泉", area:"群馬県草津町", train:180, car:180, season:["winter"], weather:["sunny","cloudy","snow"], rainOk:true, hot:false, cold:true, cat:["onsen","walk","kanko"], desc:"湯畑を中心とした温泉街の散策と、日本屈指の名湯。冬の寒い日にこそ行きたい遠出コース。", maps:"草津温泉"},
+];
+
+const WEATHER_MAP = {
+  0:{label:"快晴", icon:"☀️", cat:"sunny"},
+  1:{label:"晴れ", icon:"🌤️", cat:"sunny"},
+  2:{label:"晴れ時々曇り", icon:"⛅", cat:"cloudy"},
+  3:{label:"曇り", icon:"☁️", cat:"cloudy"},
+  45:{label:"霧", icon:"🌫️", cat:"cloudy"},
+  48:{label:"霧", icon:"🌫️", cat:"cloudy"},
+  51:{label:"小雨", icon:"🌦️", cat:"rain"},
+  53:{label:"雨", icon:"🌧️", cat:"rain"},
+  55:{label:"強い雨", icon:"🌧️", cat:"rain"},
+  61:{label:"雨", icon:"🌧️", cat:"rain"},
+  63:{label:"雨", icon:"🌧️", cat:"rain"},
+  65:{label:"強い雨", icon:"🌧️", cat:"rain"},
+  71:{label:"雪", icon:"🌨️", cat:"snow"},
+  73:{label:"雪", icon:"🌨️", cat:"snow"},
+  75:{label:"大雪", icon:"❄️", cat:"snow"},
+  80:{label:"にわか雨", icon:"🌦️", cat:"rain"},
+  81:{label:"にわか雨", icon:"🌦️", cat:"rain"},
+  82:{label:"激しいにわか雨", icon:"🌧️", cat:"rain"},
+  95:{label:"雷雨", icon:"⛈️", cat:"rain"},
+};
+const MANUAL_ICON = {sunny:"☀️", cloudy:"☁️", rain:"🌧️", snow:"❄️"};
+const MANUAL_LABEL = {sunny:"晴れ", cloudy:"曇り", rain:"雨", snow:"雪"};
+
+const SEASON_LABEL = {spring:"春", summer:"夏", autumn:"秋", winter:"冬"};
+const CAT_LABEL = {walk:"散歩・散策", hike:"山・軽登山", food:"食べ歩き", onsen:"温泉・スパ", kanko:"観光地"};
+
+function getSeason(month){
+  if(month>=3 && month<=5) return "spring";
+  if(month>=6 && month<=8) return "summer";
+  if(month>=9 && month<=11) return "autumn";
+  return "winter";
+}
+
+let state = { transport:"train", time:60, mood:"all", mode:"auto" };
+let weatherData = null;
+
+document.getElementById("transportRow").addEventListener("click", e=>{
+  if(e.target.dataset.transport){ state.transport = e.target.dataset.transport; setActive("transportRow", e.target); render(); }
+});
+document.getElementById("timeRow").addEventListener("click", e=>{
+  if(e.target.dataset.time){ state.time = parseInt(e.target.dataset.time); setActive("timeRow", e.target); render(); }
+});
+document.getElementById("moodRow").addEventListener("click", e=>{
+  if(e.target.dataset.mood){ state.mood = e.target.dataset.mood; setActive("moodRow", e.target); render(); }
+});
+function setActive(rowId, el){
+  document.getElementById(rowId).querySelectorAll(".chip").forEach(c=>c.classList.remove("active"));
+  el.classList.add("active");
+}
+
+document.getElementById("goBtn").addEventListener("click", render);
+
+document.getElementById("autoModeBtn").addEventListener("click", ()=>{
+  state.mode = "auto";
+  document.getElementById("autoModeBtn").classList.add("active");
+  document.getElementById("manualModeBtn").classList.remove("active");
+  document.getElementById("manualPanel").classList.remove("show");
+  loadWeather();
+});
+document.getElementById("manualModeBtn").addEventListener("click", ()=>{
+  state.mode = "manual";
+  document.getElementById("manualModeBtn").classList.add("active");
+  document.getElementById("autoModeBtn").classList.remove("active");
+  document.getElementById("manualPanel").classList.add("show");
+  applyManualWeather();
+});
+document.getElementById("manualTemp").addEventListener("input", applyManualWeather);
+document.getElementById("manualWeather").addEventListener("change", applyManualWeather);
+
+function applyManualWeather(){
+  const temp = parseFloat(document.getElementById("manualTemp").value) || 0;
+  const cat = document.getElementById("manualWeather").value;
+  const month = new Date().getMonth()+1;
+  const season = getSeason(month);
+  weatherData = {temp: Math.round(temp), cat, label:MANUAL_LABEL[cat], icon:MANUAL_ICON[cat], season};
+  renderWeatherStrip();
+  render();
+}
+
+async function loadWeather(){
+  document.getElementById("weatherStrip").innerHTML = `<div class="w-loading">現在の天気を取得中…</div>`;
+  try{
+    const url = `https://api.open-meteo.com/v1/forecast?latitude=${LAT}&longitude=${LON}&current=temperature_2m,weather_code&timezone=Asia%2FTokyo`;
+    const res = await fetch(url);
+    if(!res.ok) throw new Error("network");
+    const data = await res.json();
+    const code = data.current.weather_code;
+    const temp = Math.round(data.current.temperature_2m);
+    const info = WEATHER_MAP[code] || {label:"—", icon:"🌡️", cat:"cloudy"};
+    const month = new Date().getMonth()+1;
+    const season = getSeason(month);
+    weatherData = {temp, code, cat:info.cat, label:info.label, icon:info.icon, season};
+    renderWeatherStrip();
+    render();
+  }catch(err){
+    document.getElementById("weatherStrip").innerHTML =
+      `<div class="w-loading">天気を自動取得できませんでした。「手動入力」に切り替えてください。</div>`;
+    state.mode = "manual";
+    document.getElementById("manualModeBtn").classList.add("active");
+    document.getElementById("autoModeBtn").classList.remove("active");
+    document.getElementById("manualPanel").classList.add("show");
+    applyManualWeather();
+  }
+}
+
+function renderWeatherStrip(){
+  const w = weatherData;
+  document.getElementById("weatherStrip").innerHTML = `
+    <div class="w-icon">${w.icon}</div>
+    <div class="w-main">
+      <div class="w-temp">${w.temp}℃</div>
+      <div class="w-desc">青葉台付近・${w.label}</div>
+    </div>
+    <div class="w-season">${SEASON_LABEL[w.season]}シーズン</div>
+  `;
+}
+
+function scoreSpot(s, w){
+  let score = 0;
+  const reasons = [];
+  if(s.season.includes(w.season)){ score += 3; reasons.push(SEASON_LABEL[w.season]+"におすすめ"); }
+  if(s.weather.includes(w.cat)){ score += 3; reasons.push("今の天気にぴったり"); }
+  if((w.cat === "rain" || w.cat === "snow") && s.rainOk){ score += 3; reasons.push("雨・雪の日でも楽しめる"); }
+  if(w.temp <= 8 && (s.cat.includes("onsen") || s.cold)){ score += 3; reasons.push("寒い日はあったまれる"); }
+  if(w.temp >= 29 && s.hot){ score += 4; reasons.push("暑い日でも涼しく過ごせる"); }
+  return {score, reasons};
+}
+
+function groupCandidates(candidates, w){
+  let groupA, groupB, titleA, titleB;
+  if(w.temp >= 29){
+    groupA = candidates.filter(c=>c.hot);
+    groupB = candidates.filter(c=>!c.hot);
+    titleA = `暑い日でも涼しく過ごせるスポット（現在${w.temp}℃）`;
+    titleB = "そのほかの候補（日なたが多め）";
+  } else if(w.cat === "rain" || w.cat === "snow"){
+    groupA = candidates.filter(c=>c.rainOk);
+    groupB = candidates.filter(c=>!c.rainOk);
+    titleA = w.cat === "snow" ? "雪の日でも楽しめるスポット" : "雨の日でも楽しめるスポット";
+    titleB = "晴れたら行きたい候補（今日はおすすめ度低め）";
+  } else if(w.temp <= 8){
+    groupA = candidates.filter(c=>c.cat.includes("onsen") || c.cold);
+    groupB = candidates.filter(c=>!(c.cat.includes("onsen") || c.cold));
+    titleA = `寒い日はあったまりたいスポット（現在${w.temp}℃）`;
+    titleB = "そのほかの候補";
+  } else {
+    groupA = candidates.filter(c=>c.score >= 3);
+    groupB = candidates.filter(c=>c.score < 3);
+    titleA = `${SEASON_LABEL[w.season]}・${w.label}の日におすすめ`;
+    titleB = "そのほかの候補";
+  }
+  const sortFn = (a,b)=> b.score - a.score || a.t - b.t;
+  groupA.sort(sortFn);
+  groupB.sort(sortFn);
+  return [{title:titleA, items:groupA, primary:true}, {title:titleB, items:groupB, primary:false}];
+}
+
+function postHtml(s, primary){
+  const tagsHtml = s.cat.map(c=>`<span class="tag">${CAT_LABEL[c]}</span>`).join("");
+  const reasonHtml = s.reasons.slice(0,2).map(r=>`<span class="tag reason">${r}</span>`).join("");
+  const mapsUrl = "https://www.google.com/maps/search/?api=1&query=" + encodeURIComponent(s.maps);
+  return `
+    <div class="post${primary ? "" : " dim"}">
+      <div class="post-top">
+        <div>
+          <div class="post-name">${s.name}</div>
+          <div class="post-area">${s.area}</div>
+        </div>
+        <div class="post-time"><div class="n">${s.t}</div><div class="u">分</div></div>
+      </div>
+      <div class="post-desc">${s.desc}</div>
+      <div class="post-tags">${reasonHtml}${tagsHtml}</div>
+      <a class="post-link" href="${mapsUrl}" target="_blank" rel="noopener">地図で見る →</a>
+    </div>
+  `;
+}
+
+function render(){
+  const results = document.getElementById("results");
+  if(!weatherData){
+    results.innerHTML = `<div class="empty-note">天気の情報を設定してください。</div>`;
+    return;
+  }
+  const w = weatherData;
+
+  let candidates = SPOTS.filter(s=>{
+    const t = state.transport === "train" ? s.train : s.car;
+    if(t === null || t === undefined) return false;
+    if(t > state.time) return false;
+    if(state.mood !== "all" && !s.cat.includes(state.mood)) return false;
+    return true;
+  });
+
+  candidates = candidates.map(s=>{
+    const {score, reasons} = scoreSpot(s, w);
+    const t = state.transport === "train" ? s.train : s.car;
+    return {...s, score, reasons, t};
+  });
+
+  if(candidates.length === 0){
+    results.innerHTML = `<div class="empty-note">条件に合うスポットが見つかりませんでした。時間の範囲を広げてみてください。</div>`;
+    return;
+  }
+
+  const transportLabel = state.transport === "train" ? "電車" : "車";
+  const groups = groupCandidates(candidates, w);
+
+  let html = `<div class="result-meta">${transportLabel}・${state.time}分以内 / 全${candidates.length}件</div>`;
+  groups.forEach(g=>{
+    if(g.items.length === 0) return;
+    html += `<div class="group-title${g.primary ? "" : " secondary"}">${g.title}（${g.items.length}件）</div>`;
+    g.items.forEach(s=>{ html += postHtml(s, g.primary); });
+  });
+
+  results.innerHTML = html;
+}
+
+loadWeather();
+</script>
+</body>
+</html>
