@@ -251,6 +251,7 @@ h1{ letter-spacing:.08em; }
       <button type="button" class="chip" data-mood="kouyou">紅葉</button>
       <button type="button" class="chip" data-mood="sakura">桜</button>
       <button type="button" class="chip" data-mood="illumi">イルミネーション</button>
+      <button type="button" class="chip" data-mood="solo">ひとり旅・一日まったり</button>
     </div>
   </div>
   <div class="filter-block">
@@ -800,6 +801,56 @@ NEW_SPOTS8.forEach(s=>{
 
 SPOTS.push(...NEW_SPOTS8);
 
+// ===== v13で追加したスポット（ひとり旅・一日過ごせる施設） =====
+const NEW_SPOTS9 = [
+ // 水族館・博物館・没入施設（一人でも一日楽しめる）
+ {name:"すみだ水族館", area:"東京都墨田区", lat:35.710, lon:139.809, train:75, car:70, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"東京スカイツリータウン内の水族館。ペンギンやクラゲの展示を眺めてぼーっとできる、都会の癒し空間。ソラマチと合わせて一日過ごせる。", maps:"すみだ水族館"},
+ {name:"サンシャイン水族館", area:"東京都豊島区", lat:35.729, lon:139.718, train:65, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"池袋のビル屋上の「天空のオアシス」。頭上を泳ぐペンギンで知られ、水族館とショッピングで一日楽しめる。", maps:"サンシャイン水族館"},
+ {name:"しながわ水族館", area:"東京都品川区", lat:35.591, lon:139.734, train:60, car:55, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"しながわ区民公園の中の水族館。イルカショーやアザラシのトンネル水槽があり、公園の散歩とセットでゆったり。", maps:"しながわ水族館"},
+ {name:"マクセル アクアパーク品川", area:"東京都港区", lat:35.629, lon:139.735, train:55, car:55, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"音と光の演出が美しい都市型水族館。イルカのパフォーマンスは夜の部が特に幻想的で、大人一人でも入りやすい。", maps:"マクセル アクアパーク品川"},
+ {name:"国立科学博物館", area:"東京都台東区", lat:35.716, lon:139.776, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"日本館と地球館からなる国内最大級の博物館。恐竜や深海、宇宙まで、一日では見切れないボリューム。知的な一人時間に最適。", maps:"国立科学博物館 上野"},
+ {name:"東京国立博物館", area:"東京都台東区", lat:35.719, lon:139.776, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"国宝・重文が集まる東洋一の博物館。本館・東洋館・庭園と、静かに名品と向き合える大人の場所。", maps:"東京国立博物館"},
+ {name:"国立西洋美術館", area:"東京都台東区", lat:35.715, lon:139.776, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"ル・コルビュジエ設計の世界遺産の美術館。モネやロダンの名品と、前庭の彫刻をのんびり眺められる。", maps:"国立西洋美術館"},
+ {name:"日本科学未来館", area:"東京都江東区", lat:35.619, lon:139.777, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"お台場の体験型科学館。巨大な地球ディスプレイ「ジオ・コスモス」や宇宙・ロボットの展示で一日没頭できる。", maps:"日本科学未来館"},
+ {name:"チームラボボーダレス", area:"東京都港区", lat:35.660, lon:139.741, train:60, car:60, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"麻布台ヒルズの没入型アートミュージアム。境界なく流れ続ける光のアートの中を、時間を忘れてさまよえる（予約必須）。", maps:"チームラボボーダレス"},
+ {name:"サンリオピューロランド", area:"東京都多摩市", lat:35.624, lon:139.429, train:55, car:55, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"キティやマイメロに会える屋内型テーマパーク。天候不問で、かわいい世界に浸る大人の一人客も多い。", maps:"サンリオピューロランド"},
+ {name:"藤子・F・不二雄ミュージアム", area:"川崎市多摩区", lat:35.610, lon:139.574, train:45, car:45, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"ドラえもんの原画や原作の世界を展示するミュージアム（日時指定の予約制）。カフェのメニューまで世界観たっぷり。", maps:"藤子・F・不二雄ミュージアム"},
+ {name:"スモールワールズ東京", area:"東京都江東区", lat:35.638, lon:139.788, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"世界最大級の屋内ミニチュアテーマパーク。小さな街並みや宇宙センターを眺めていると時間を忘れる、没頭系スポット。", maps:"スモールワールズ東京"},
+ {name:"プラネタリアTOKYO", area:"東京都千代田区", lat:35.675, lon:139.762, train:60, car:60, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","solo"], desc:"有楽町マリオンのプラネタリウム。アロマや生演奏と星空を組み合わせた癒し系プログラムが、大人の一人時間に人気。", maps:"プラネタリアTOKYO 有楽町"},
+ // 大型スパ・温泉（一日まったり）
+ {name:"大江戸温泉物語 浦安万華郷", area:"千葉県浦安市", lat:35.648, lon:139.880, train:80, car:70, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"露天風呂エリアが広大な温泉テーマパーク。水着で入れる庭園露天や足湯庭園もあり、一日中湯ったり過ごせる。", maps:"浦安万華郷"},
+ {name:"タイムズ スパ・レスタ", area:"東京都豊島区", lat:35.730, lon:139.717, train:65, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"池袋の大人専用（18歳以上）のスパ。静かなリラウンジやレストランが充実し、都会で一日リセットするのに向く。", maps:"タイムズ スパ・レスタ"},
+ {name:"横濱スパヒルズ 竜泉寺の湯", area:"横浜市旭区", lat:35.486, lon:139.545, train:40, car:35, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"多彩なお風呂と岩盤浴が揃う大型温浴施設。炭酸泉や美肌の湯など湯めぐり気分で、一日まったりできる近場の本命。", maps:"横濱スパヒルズ 竜泉寺の湯"},
+ {name:"スカイスパYOKOHAMA", area:"横浜市西区", lat:35.465, lon:139.619, train:35, car:35, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"横浜駅直結のサウナで有名な施設。アウフグースやサウナシアターがあり、サウナ好きの大人が一日過ごせる。", maps:"スカイスパYOKOHAMA"},
+ {name:"スパ＆ホテル舞浜ユーラシア", area:"千葉県浦安市", lat:35.631, lon:139.876, train:80, car:70, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"源泉かけ流しの温泉とサウナ、岩盤浴が揃う舞浜のスパホテル。ディズニー帰りにも、温泉目的の一日にも。", maps:"舞浜ユーラシア"},
+ // 植物園・公園・街歩き（一人の散策）
+ {name:"HANA・BIYORI", area:"東京都稲城市", lat:35.626, lon:139.417, train:55, car:50, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["garden","street","solo"], desc:"よみうりランド隣接の植物園。花に囲まれたスターバックスや、水辺の生き物展示があり、緑の中で一日ぼーっとできる。", maps:"HANA・BIYORI"},
+ {name:"小石川植物園", area:"東京都文京区", lat:35.720, lon:139.744, train:65, car:60, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","garden","solo"], peaks:[{type:"kouyou",start:"11-25",end:"12-10"}], desc:"東京大学の植物園。広大な林と日本庭園があり、都心とは思えない静けさ。紅葉の穴場としても知られる。", maps:"小石川植物園"},
+ {name:"夢の島熱帯植物館", area:"東京都江東区", lat:35.650, lon:139.825, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["nature","garden","solo"], desc:"大きなドーム温室で熱帯植物を一年中楽しめる植物館。滝のある温室を歩くと、南の島に来たような気分に。", maps:"夢の島熱帯植物館"},
+ {name:"代々木公園", area:"東京都渋谷区", lat:35.672, lon:139.695, train:55, car:55, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","solo"], desc:"都心の広大な芝生公園。原宿・明治神宮と隣接し、ピクニックや読書など、思い思いのひとり時間が過ごせる。", maps:"代々木公園"},
+ {name:"神保町（古書店街）", area:"東京都千代田区", lat:35.694, lon:139.758, train:60, car:60, season:"ALL", weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:false, cat:["street","food","solo"], desc:"世界最大級の古書店街。本探しの合間に、名店ぞろいのカレーや純喫茶をはしごするのが大人の楽しみ。", maps:"神保町"},
+ {name:"谷根千（谷中・根津・千駄木）", area:"東京都台東区・文京区", lat:35.722, lon:139.768, train:70, car:65, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","walk","solo"], desc:"下町の風情が残る散策エリア。谷中銀座の食べ歩き、根津神社、カフェや雑貨店めぐりと、一人の街歩きの王道。", maps:"谷中銀座"},
+ {name:"清澄白河", area:"東京都江東区", lat:35.681, lon:139.799, train:65, car:60, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","solo"], desc:"コーヒーの聖地と呼ばれるエリア。東京都現代美術館や清澄庭園と合わせて、カフェ巡りの一日が組める。", maps:"清澄白河"},
+ {name:"蔵前", area:"東京都台東区", lat:35.703, lon:139.791, train:70, car:65, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","solo"], desc:"「東京のブルックリン」とも呼ばれるものづくりの街。カフェや文具・雑貨の店が点在し、隅田川沿いの散歩も心地いい。", maps:"蔵前"},
+ {name:"西荻窪", area:"東京都杉並区", lat:35.704, lon:139.599, train:60, car:60, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","solo"], desc:"古道具屋や個人経営の喫茶・カフェが集まる、静かで味のある街。一人で入りやすい店が多い。", maps:"西荻窪"},
+ {name:"高円寺", area:"東京都杉並区", lat:35.705, lon:139.650, train:60, car:60, season:"ALL", weather:["sunny","cloudy","rain"], rainOk:true, hot:false, cold:false, cat:["street","food","solo"], desc:"古着屋と純喫茶、アーケード商店街が楽しい街。気取らない雰囲気で、一人の食べ歩きや買い物に向く。", maps:"高円寺"},
+ {name:"中目黒", area:"東京都目黒区", lat:35.644, lon:139.699, train:50, car:55, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","solo"], desc:"目黒川沿いにカフェやセレクトショップが並ぶ大人の街。川沿いの散歩とカフェ休憩でのんびり過ごせる。", maps:"中目黒"}
+];
+NEW_SPOTS9.forEach(s=>{
+  if(s.season === "ALL") s.season = ["spring","summer","autumn","winter"];
+  if(s.weather === "ALLW") s.weather = ["sunny","cloudy","rain","snow"];
+});
+// 既存スポットにも「ひとり旅・一日まったり」を付ける（一日過ごせる施設・静かな場所）
+(function(){
+  const KEYS = ["おふろcafe","スパジアムジャポン","ラクーア","テルマー湯","庭の湯","竜泉寺の湯","万葉倶楽部","健康センター","湯けむりの庄","SPA EAS","角川武蔵野","鉄道博物館","チームラボ","水族館","水族園","メッツァ","ハルニレテラス","湯河原惣湯","北鎌倉","深大寺と神代植物公園","新宿御苑","昭和記念公園","井の頭","明治神宮","スヌーピーミュージアム","代官山","自由が丘"];
+  SPOTS.forEach(s=>{
+    if(!s.cat.includes("solo") && KEYS.some(k=>s.name.includes(k))) s.cat.push("solo");
+  });
+})();
+
+SPOTS.push(...NEW_SPOTS9);
+
+
 
 
 
@@ -822,7 +873,7 @@ if(miyagase && !miyagase.cat.includes("food")) miyagase.cat.push("food");
 
 
 const SEASON_LABEL = {spring:"春", summer:"夏", autumn:"秋", winter:"冬"};
-const CAT_LABEL = {nature:"自然・絶景", walk:"散歩・散策", hike:"軽登山・ハイク", onsen:"温泉・湯", food:"食べ歩き・グルメ", street:"街歩き", garden:"庭園・花", kouyou:"紅葉", sakura:"桜", illumi:"イルミネーション"};
+const CAT_LABEL = {nature:"自然・絶景", walk:"散歩・散策", hike:"軽登山・ハイク", onsen:"温泉・湯", food:"食べ歩き・グルメ", street:"街歩き", garden:"庭園・花", kouyou:"紅葉", sakura:"桜", illumi:"イルミネーション", solo:"ひとり旅・一日まったり"};
 const BUCKETS = [ {min:0,max:30}, {min:30,max:60}, {min:60,max:120}, {min:120,max:99999} ];
 
 function getSeason(month){
@@ -957,7 +1008,7 @@ function reasonTags(s){
   }
   return notes;
 }
-const CAT_ICON = {illumi:"✨", kouyou:"🍁", sakura:"🌸", onsen:"♨️", food:"🍽️", hike:"🥾", nature:"🌿", garden:"🌼", street:"🏙️", walk:"🚶"};
+const CAT_ICON = {illumi:"✨", kouyou:"🍁", sakura:"🌸", onsen:"♨️", food:"🍽️", hike:"🥾", nature:"🌿", garden:"🌼", street:"🏙️", walk:"🚶", solo:"🍵"};
 function catIcon(s){
   for(const c of ["illumi","kouyou","sakura","onsen","food","hike","nature","garden","street","walk"]){
     if(s.cat.includes(c)) return CAT_ICON[c];
