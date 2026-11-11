@@ -1130,11 +1130,24 @@ function setOrigin(lat, lon, label){
 document.getElementById("geoBtn").addEventListener("click", ()=>{
   if(!navigator.geolocation){ originStatus.textContent = "このブラウザでは現在地が使えませんでした。"; return; }
   originStatus.textContent = "現在地を取得中…";
-  navigator.geolocation.getCurrentPosition(
-    pos => { originStatus.textContent = ""; setOrigin(pos.coords.latitude, pos.coords.longitude, "現在地"); },
-    err => { originStatus.textContent = "現在地を取得できませんでした。位置情報の許可を確認してください。"; },
-    {timeout: 10000, maximumAge: 300000}
-  );
+  const onOk = pos => { originStatus.textContent = ""; setOrigin(pos.coords.latitude, pos.coords.longitude, "現在地"); };
+  const onErr = err => {
+    if(err && err.code === 1){
+      originStatus.textContent = "位置情報が許可されていません。ホーム画面に追加したアプリでは許可のダイアログが出ないことがあるので、Safariでこのページを開いて「現在地から探す」を押して許可してください（iPhoneの「設定 → プライバシーとセキュリティ → 位置情報サービス → SafariのWebサイト」でも確認できます）。";
+    } else if(err && err.code === 2){
+      originStatus.textContent = "現在地を特定できませんでした。時間をおいて、もう一度お試しください。";
+    } else {
+      originStatus.textContent = "現在地を取得できませんでした。通信や電波の状況を確認して、もう一度お試しください。";
+    }
+  };
+  navigator.geolocation.getCurrentPosition(onOk, err => {
+    if(err && err.code === 3){
+      // タイムアウト時は精度を落として1回だけ自動リトライ
+      navigator.geolocation.getCurrentPosition(onOk, onErr, {enableHighAccuracy: false, timeout: 20000, maximumAge: 600000});
+    } else {
+      onErr(err);
+    }
+  }, {enableHighAccuracy: true, timeout: 12000, maximumAge: 300000});
 });
 async function searchOrigin(){
   const q = document.getElementById("originInput").value.trim();
