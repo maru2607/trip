@@ -850,6 +850,34 @@ NEW_SPOTS9.forEach(s=>{
 
 SPOTS.push(...NEW_SPOTS9);
 
+// ===== v14で追加したスポット（自然の名所） =====
+const NEW_SPOTS10 = [
+ {name:"大室山", area:"静岡県伊東市", lat:34.900, lon:139.095, train:145, car:140, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["nature","hike"], desc:"お椀を伏せたような美しい円錐形の山。リフトで登る山頂からは伊豆大島や富士山まで見渡せる、伊豆のシンボル。", maps:"大室山 伊東"},
+ {name:"城ヶ崎海岸", area:"静岡県伊東市", lat:34.875, lon:139.135, train:150, car:145, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"大室山の噴火でできた溶岩の海岸。断崖にかかる門脇つり橋と、荒々しい岩場と海のコントラストが絶景。", maps:"城ヶ崎海岸"},
+ {name:"白駒池", area:"長野県佐久穂町", lat:36.052, lon:138.461, train:200, car:195, season:["summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"標高2,100mを超える八ヶ岳の湖。湖畔は苔の森に包まれ、もののけ姫の森のモデルとも言われる幻想的な場所。", maps:"白駒池"},
+ {name:"鏡池（戸隠）", area:"長野県長野市", lat:36.724, lon:138.068, train:200, car:195, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["nature","kouyou"], peaks:[{type:"kouyou",start:"10-15",end:"10-28"}], desc:"風のない日は戸隠連峰を鏡のように映す池。紅葉の時期の水鏡は信州でも指折りの絶景。", maps:"鏡池 戸隠"},
+ {name:"入笠山", area:"長野県富士見町", lat:35.912, lon:138.167, train:170, car:160, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["nature","hike"], desc:"ゴンドラで一気に山頂近くへ。入笠湿原の花畑と、富士山・八ヶ岳まで見渡す360度の眺望が楽しめる初心者向けの山。", maps:"入笠山"},
+ {name:"吐竜の滝", area:"山梨県北杜市", lat:35.919, lon:138.409, train:160, car:150, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"清里の川俣川渓谷にある、絹糸のように流れ落ちる滝。岩肌を滑る清流と緑に包まれる、静かな癒しの場所。", maps:"吐竜の滝"},
+ {name:"夕日の滝", area:"神奈川県南足柄市", lat:35.421, lon:139.041, train:115, car:95, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"金太郎が産湯に使ったという伝説の滝。西日を浴びて輝くことからその名が付き、滝壺まで近づける。", maps:"夕日の滝 南足柄"},
+ {name:"那須岳・茶臼岳（那須ロープウェイ）", area:"栃木県那須町", lat:37.125, lon:139.964, train:190, car:180, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["nature","hike"], desc:"ロープウェイで茶臼岳の9合目へ。今も噴煙を上げる活火山の山頂からは、関東平野まで見渡せる大展望。", maps:"那須ロープウェイ"},
+ {name:"湯滝", area:"栃木県日光市", lat:36.799, lon:139.427, train:195, car:185, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","kouyou"], peaks:[{type:"kouyou",start:"10-15",end:"10-28"}], desc:"湯ノ湖から流れ落ちる長さ110mの大滝。観瀑台から間近に眺められ、岩壁を滑り落ちる水の迫力が圧巻。", maps:"湯滝 日光"},
+ {name:"奥四万湖", area:"群馬県中之条町", lat:36.726, lon:138.803, train:195, car:180, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature"], desc:"「四万ブルー」と呼ばれるコバルトブルーの湖。四万温泉の奥にあり、湖畔のドライブやカヌーで静かな時間を過ごせる。", maps:"奥四万湖"},
+ {name:"竜神大吊橋", area:"茨城県常陸太田市", lat:36.684, lon:140.511, train:180, car:160, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","kouyou"], peaks:[{type:"kouyou",start:"11-10",end:"11-25"}], desc:"竜神峡にかかる長さ375m・高さ100mの歩行者専用吊橋。渓谷の紅葉と、足元のスリルが楽しめる茨城の絶景。", maps:"竜神大吊橋"},
+ {name:"黒山三滝", area:"埼玉県越生町", lat:35.957, lon:139.268, train:115, car:100, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"天狗滝・男滝・女滝の三つの滝からなる景勝地。清流沿いの短い散策で、マイナスイオンたっぷりの緑に浸れる。", maps:"黒山三滝"},
+ {name:"本栖湖", area:"山梨県富士河口湖町", lat:35.464, lon:138.585, train:165, car:140, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"旧千円札の富士山の舞台（中之倉峠からの眺め）で知られる、富士五湖で最も透明度の高い湖。静かな湖畔が魅力。", maps:"本栖湖"},
+ {name:"精進湖", area:"山梨県富士河口湖町", lat:35.489, lon:138.609, train:160, car:140, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk"], desc:"大室山を抱くように見える「子抱き富士」で知られる、富士五湖で一番小さく静かな湖。のんびりした時間が流れる。", maps:"精進湖"},
+ {name:"花貫渓谷", area:"茨城県高萩市", lat:36.845, lon:140.630, train:190, car:170, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","kouyou"], peaks:[{type:"kouyou",start:"11-12",end:"11-25"}], desc:"汐見滝吊り橋から紅葉の渓谷を眺める、茨城の紅葉の名所。川のせせらぎとモミジのトンネルが美しい。", maps:"花貫渓谷"},
+ {name:"霧降の滝", area:"栃木県日光市", lat:36.763, lon:139.586, train:175, car:165, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","kouyou"], peaks:[{type:"kouyou",start:"10-28",end:"11-12"}], desc:"日本の滝百選のひとつ。二段に流れ落ちる姿を観瀑台から望み、秋は紅葉との競演が見事。", maps:"霧降の滝"},
+ {name:"湯ノ湖", area:"栃木県日光市", lat:36.802, lon:139.421, train:195, car:185, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","kouyou"], peaks:[{type:"kouyou",start:"10-10",end:"10-25"}], desc:"奥日光の入口にある静かな湖。一周約3kmの遊歩道があり、湯滝へと続く散策の起点。紅葉の早さでも知られる。", maps:"湯ノ湖"}
+];
+NEW_SPOTS10.forEach(s=>{
+  if(s.season === "ALL") s.season = ["spring","summer","autumn","winter"];
+  if(s.weather === "ALLW") s.weather = ["sunny","cloudy","rain","snow"];
+});
+
+SPOTS.push(...NEW_SPOTS10);
+
+
 
 
 
