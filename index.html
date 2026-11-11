@@ -877,6 +877,39 @@ NEW_SPOTS10.forEach(s=>{
 
 SPOTS.push(...NEW_SPOTS10);
 
+// ===== v15で追加したスポット（近年のランキングで評価が高い温泉施設） =====
+const NEW_SPOTS11 = [
+ // ニフティ温泉 年間ランキング2025 関東TOP10の未収録分
+ {name:"美楽温泉 SPA-HERBS", area:"さいたま市北区", lat:35.950, lon:139.638, train:90, car:85, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"ニフティ温泉の関東ランキング2025で1位。多彩なお風呂と岩盤浴、質の高いレストランまで揃う、ワンランク上の大型スパ。", maps:"美楽温泉 SPA-HERBS"},
+ {name:"竜泉寺の湯 草加谷塚店", area:"埼玉県草加市", lat:35.838, lon:139.789, train:95, car:85, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同ランキング関東2位。「ほたるの炭酸泉」や種類豊富なサウナ、1万冊超の漫画がある休憩室で一日過ごせる。", maps:"竜泉寺の湯 草加谷塚店"},
+ {name:"湘南RESORT SPA 竜泉寺の湯", area:"神奈川県茅ヶ崎市", lat:35.347, lon:139.410, train:70, car:65, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同ランキング関東6位。富士山を望む露天風呂とリゾート感のある空間で、湘南ドライブの締めにも人気。", maps:"湘南RESORT SPA 竜泉寺の湯"},
+ {name:"横浜青葉温泉 喜楽里 別邸", area:"横浜市青葉区", lat:35.597, lon:139.553, train:20, car:20, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同ランキング関東7位。青葉区の落ち着いた大人向け温泉で、近場で静かにリフレッシュしたい日に。", maps:"横浜青葉温泉 喜楽里 別邸"},
+ {name:"溝口温泉 喜楽里", area:"川崎市高津区", lat:35.598, lon:139.612, train:40, car:35, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同ランキング関東8位。黒湯温泉と炭酸泉の組み合わせが人気で、溝口駅からも近い立ち寄りやすい名湯。", maps:"溝口温泉 喜楽里"},
+ // クーポン人気ランキング関東TOP10（2025年9月）より
+ {name:"天然温泉 花鳥風月（サイボク）", area:"埼玉県日高市", lat:35.914, lon:139.335, train:105, car:90, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","food","solo"], desc:"クーポン人気ランキング関東1位（2025年）。お肉のテーマパーク「サイボク」園内の本格温泉で、ブランド豚のグルメも楽しめる。", maps:"天然温泉 花鳥風月 サイボク"},
+ {name:"つくば温泉 喜楽里 別邸", area:"茨城県つくば市", lat:36.054, lon:140.138, train:115, car:100, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同2位。小学生以上対象の落ち着いた日帰り温泉で、ヒノキの露天風呂と広い岩盤浴が高評価。大人の静かな一日向き。", maps:"つくば温泉 喜楽里 別邸"},
+ {name:"RAKU SPA 鶴見", area:"横浜市鶴見区", lat:35.493, lon:139.673, train:45, car:40, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"同3位。15種類のお風呂とプラネタリウム付き岩盤浴、2万冊超のコミックなど、遊び心のある大型スパ。", maps:"RAKU SPA 鶴見"},
+ // ニューオープン部門の話題施設
+ {name:"東京豊洲 万葉倶楽部", area:"東京都江東区", lat:35.644, lon:139.783, train:65, car:60, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"2024年2月に千客万来内にオープンし、ニューオープンランキング1位。箱根・湯河原の源泉を運ぶ展望露天が自慢。", maps:"東京豊洲 万葉倶楽部"},
+ {name:"よみうりランド眺望温泉 花景の湯", area:"東京都稲城市", lat:35.626, lon:139.418, train:55, car:50, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo","garden"], desc:"2024年3月オープン。丘の上から都心を望む眺望露天と、HANA・BIYORIの植物に囲まれた新しい温泉施設。", maps:"花景の湯 よみうりランド"},
+ {name:"HAMANOYU えど遊", area:"東京都中央区", lat:35.679, lon:139.788, train:65, car:60, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"2025年4月に日本橋浜町にオープンした新しい温浴施設。湯カフェのある都会の癒しスポット。", maps:"HAMANOYU えど遊"},
+ // その他の高評価・話題の施設
+ {name:"かりんの湯", area:"千葉県香取市", lat:35.898, lon:140.446, train:165, car:135, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo","nature"], desc:"グランピング施設に併設された人気温泉。サウナと自然に囲まれた露天で、のんびり一日過ごせる。", maps:"かりんの湯 香取"},
+ {name:"スパメッツァ おおたか 竜泉寺の湯", area:"千葉県流山市", lat:35.872, lon:139.926, train:90, car:85, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"流山おおたかの森の大型スパ。ドラゴンロウリュで知られるサウナと多彩な岩盤浴で、近年特に話題の施設。", maps:"スパメッツァ おおたか"},
+ {name:"片倉館（千人風呂）", area:"長野県諏訪市", lat:36.044, lon:138.090, train:170, car:160, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo","street"], desc:"国の重要文化財の浴場棟で入れる上諏訪温泉。底に玉砂利を敷いた深さ1.1mの「千人風呂」は、一度は体験したい名湯。", maps:"片倉館 諏訪"},
+ {name:"まえばし赤城の湯", area:"群馬県前橋市", lat:36.423, lon:139.056, train:165, car:140, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"2023年に道の駅まえばし赤城にオープンした新しい日帰り温泉。赤城山の眺めと、地元グルメの道の駅とセットで。", maps:"まえばし赤城の湯"},
+ {name:"幕張温泉 湯楽の里", area:"千葉市美浜区", lat:35.632, lon:140.045, train:90, car:85, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"東京湾を望む露天風呂が自慢の温泉。海を眺めながらの湯浴みと、幕張エリアの散策と合わせて。", maps:"幕張温泉 湯楽の里"},
+ {name:"酒々井温泉 湯楽の里", area:"千葉県酒々井町", lat:35.733, lon:140.277, train:130, car:110, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo"], desc:"酒々井プレミアム・アウトレット近くの日帰り温泉。買い物帰りの立ち寄り湯として人気が高い。", maps:"酒々井温泉 湯楽の里"},
+ {name:"潮騒の湯", area:"茨城県大洗町", lat:36.318, lon:140.600, train:170, car:150, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","solo","nature"], desc:"太平洋を目の前に望む大洗の温泉。波の音を聞きながらの露天風呂と、大洗の海鮮グルメとセットで。", maps:"潮騒の湯 大洗"}
+];
+NEW_SPOTS11.forEach(s=>{
+  if(s.season === "ALL") s.season = ["spring","summer","autumn","winter"];
+  if(s.weather === "ALLW") s.weather = ["sunny","cloudy","rain","snow"];
+});
+
+SPOTS.push(...NEW_SPOTS11);
+
+
 
 
 
