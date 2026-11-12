@@ -959,6 +959,32 @@ NEW_SPOTS12.forEach(s=>{
 
 SPOTS.push(...NEW_SPOTS12);
 
+// ===== v17で追加したスポット（食べ歩きが充実した園地・牧場・道の駅タイプ） =====
+const NEW_SPOTS13 = [
+ {name:"菓子屋横丁（川越）", area:"埼玉県川越市", lat:35.922, lon:139.484, train:85, car:80, season:"ALL", weather:"ALLW", rainOk:false, hot:false, cold:false, cat:["food","street"], desc:"駄菓子屋が20軒ほど並ぶ川越の名物横丁。飴やふ菓子、芋スイーツをつまみ歩きできる、小江戸散策の甘い寄り道。", maps:"菓子屋横丁 川越"},
+ {name:"道の駅 川場田園プラザ", area:"群馬県川場村", lat:36.683, lon:139.082, train:175, car:160, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["food","nature","walk"], desc:"「道の駅グランプリ」で何度も上位に入る人気の道の駅。ベーカリーやソーセージ、地元グルメと直売が充実し、食べ歩き目的でも楽しめる。", maps:"川場田園プラザ"},
+ {name:"成田ゆめ牧場", area:"千葉県成田市", lat:35.857, lon:140.276, train:140, car:120, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food","walk"], desc:"成田の老舗観光牧場。濃厚ソフトクリームやヨーグルト、バーベキューなど牧場グルメが揃い、動物ふれあいも。", maps:"成田ゆめ牧場"},
+ {name:"まかいの牧場", area:"静岡県富士宮市", lat:35.408, lon:138.565, train:165, car:150, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food","walk"], desc:"富士山のふもとの牧場。乳製品やソーセージ作り体験、地元食材のレストランなど、食べて遊べる朝霧高原の定番。", maps:"まかいの牧場"},
+ {name:"浜松フルーツパーク時之栖", area:"静岡県浜松市", lat:34.840, lon:137.731, train:175, car:180, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["garden","food","nature"], desc:"一年中いろいろなフルーツ狩りが楽しめる公園。フルーツスイーツや直売もあり、浜名湖観光と合わせて。", maps:"浜松フルーツパーク時之栖"},
+ {name:"酪農王国オラッチェ", area:"静岡県函南町", lat:35.076, lon:138.968, train:120, car:115, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food"], desc:"丹那盆地の酪農テーマパーク。濃厚な丹那牛乳ソフトや地ビール、チーズ工房など、牛乳グルメが充実。", maps:"酪農王国オラッチェ"},
+ {name:"那須南ヶ丘牧場", area:"栃木県那須町", lat:37.062, lon:139.977, train:185, car:175, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food","walk"], desc:"入園無料の那須の牧場。ガーンジィ牛乳のソフトクリームやジンギスカンなど、牧場グルメを気軽に楽しめる。", maps:"那須南ヶ丘牧場"},
+ {name:"伊香保グリーン牧場", area:"群馬県渋川市", lat:36.518, lon:138.935, train:155, car:145, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food","walk"], desc:"伊香保温泉近くの牧場。シープドッグショーや乗馬に加え、ソフトクリームやバーベキューなどの牧場グルメも。", maps:"伊香保グリーン牧場"},
+ {name:"榎本牧場", area:"埼玉県上尾市", lat:35.988, lon:139.573, train:95, car:85, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food"], desc:"荒川沿いの都市近郊牧場。搾りたてミルクのジェラートが人気で、サイクリング途中の寄り道にも愛される場所。", maps:"榎本牧場"},
+ {name:"道の駅 木更津うまくたの里", area:"千葉県木更津市", lat:35.398, lon:139.977, train:110, car:95, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["food","nature"], desc:"落花生グルメや地元野菜の直売が充実した道の駅。おっきなピーナッツのオブジェが目印で、房総ドライブの寄り道に。", maps:"道の駅 木更津うまくたの里"},
+ {name:"道の駅 保田小学校", area:"千葉県鋸南町", lat:35.130, lon:139.837, train:165, car:140, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["food","street","walk"], desc:"廃校になった小学校を活用した道の駅。給食風のメニューや地元グルメ、直売所「きょなん楽市」が楽しい。", maps:"道の駅 保田小学校"},
+ {name:"道の駅 発酵の里こうざき", area:"千葉県神崎町", lat:35.899, lon:140.406, train:155, car:130, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["food","street"], desc:"酒どころ神崎の「発酵」をテーマにした道の駅。甘酒や味噌、地酒スイーツなど、発酵グルメの食べ歩きができる。", maps:"道の駅 発酵の里こうざき"},
+ {name:"道の駅 オライはすぬま", area:"千葉県山武市", lat:35.565, lon:140.448, train:140, car:120, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["food","nature"], desc:"九十九里の海の幸と農産物の直売が人気の道の駅。いわし料理や地元スイーツをつまんで、海岸散策とセットで。", maps:"道の駅 オライはすぬま"},
+ {name:"道の駅 いちごの里よしみ", area:"埼玉県吉見町", lat:36.038, lon:139.460, train:105, car:95, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["food","nature"], desc:"いちごの里として知られる吉見町の道の駅。いちごスイーツや新鮮野菜の直売があり、うどんも名物。", maps:"道の駅 いちごの里よしみ"},
+ {name:"あけぼの山農業公園", area:"千葉県柏市", lat:35.881, lon:139.996, train:95, car:90, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["garden","nature","food","walk"], desc:"風車とチューリップ・コスモスの花畑で知られる農業公園。直売所や売店があり、花を眺めながらのんびり過ごせる。", maps:"あけぼの山農業公園"}
+];
+NEW_SPOTS13.forEach(s=>{
+  if(s.season === "ALL") s.season = ["spring","summer","autumn","winter"];
+  if(s.weather === "ALLW") s.weather = ["sunny","cloudy","rain","snow"];
+});
+
+SPOTS.push(...NEW_SPOTS13);
+
+
 
 
 
@@ -968,7 +994,7 @@ SPOTS.push(...NEW_SPOTS12);
 
 
 // 温泉街・高原など、実は食べ歩きも充実している既存スポットに food を付与
-["修善寺","草津温泉","伊香保温泉","清里高原","河口湖・富士五湖","山中湖・忍野八海"].forEach(n=>{
+["修善寺","草津温泉","伊香保温泉","清里高原","河口湖・富士五湖","山中湖・忍野八海","まえばし赤城の湯"].forEach(n=>{
   const s = SPOTS.find(x=>x.name === n);
   if(s && !s.cat.includes("food")) s.cat.push("food");
 });
