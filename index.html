@@ -1033,7 +1033,7 @@ function estimateMinutes(spot, mode){
   const distDefault = haversine(DEFAULT_ORIGIN.lat, DEFAULT_ORIGIN.lon, spot.lat, spot.lon);
   if(distDefault < 1) return base;
   const speedFactor = base / distDefault;
-  return Math.max(10, Math.round(distOrigin * speedFactor));
+  return Math.max(10, Math.round(distOrigin * speedFactor / 5) * 5);
 }
 
 let state = { transport:"train", buckets:[0,1], moods:new Set(), keyword:"" };
@@ -1163,7 +1163,7 @@ function postHtml(s){
       ${peakBadge(s)}
       <div class="post-top">
         <div><div class="post-name">${catIcon(s)} ${s.name}</div><div class="post-area">${s.area}</div></div>
-        <div class="post-time"><div class="n">${state.transport === "car" ? "🚗" : "🚃"} ${s.t}</div><div class="u">分・約${s.km}km</div></div>
+        <div class="post-time"><div class="n">${state.transport === "car" ? "🚗" : "🚃"} 約${s.t}</div><div class="u">分・約${s.km}km</div></div>
       </div>
       <div class="post-desc">${s.desc}</div>
       <div class="post-tags">${noteHtml}${tagsHtml}</div>
