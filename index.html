@@ -909,6 +909,57 @@ NEW_SPOTS11.forEach(s=>{
 
 SPOTS.push(...NEW_SPOTS11);
 
+// ===== v16で追加したスポット（基本的な観光地の抜け補完） =====
+const NEW_SPOTS12 = [
+ // 神奈川
+ {name:"ポーラ美術館", area:"箱根町", lat:35.277, lon:139.022, train:135, car:120, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","nature","solo"], desc:"仙石原の森に溶け込むように建つ美術館。印象派のコレクションと、森の遊歩道を一緒に楽しめる大人の箱根。", maps:"ポーラ美術館"},
+ {name:"箱根湿生花園", area:"箱根町", lat:35.264, lon:139.009, train:140, car:125, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["garden","nature","walk"], desc:"仙石原の湿原に約1,700種の湿性植物が咲く植物園。季節ごとに花が入れ替わる、静かな散策スポット。", maps:"箱根湿生花園"},
+ {name:"三笠公園・戦艦三笠", area:"横須賀市", lat:35.284, lon:139.674, train:105, car:95, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","walk"], desc:"日本海海戦の旗艦「三笠」を保存する公園。猿島への船も近く、横須賀観光の起点になる。", maps:"三笠公園 横須賀"},
+ // 静岡
+ {name:"来宮神社", area:"熱海市", lat:35.122, lon:139.066, train:105, car:100, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","nature","walk"], desc:"樹齢2,100年超の大楠で知られる熱海の古社。木漏れ日の境内とカフェで、のんびりパワースポット巡り。", maps:"来宮神社"},
+ {name:"MOA美術館", area:"熱海市", lat:35.109, lon:139.069, train:110, car:100, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","garden","solo"], desc:"相模湾を見下ろす高台の美術館。尾形光琳の国宝や黄金の茶の間、日本庭園まで揃う熱海の文化の顔。", maps:"MOA美術館"},
+ {name:"伊豆高原・ぐらんぱる公園", area:"静岡県伊東市", lat:34.878, lon:139.103, train:155, car:145, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","street","solo"], desc:"大室山のふもとの高原エリア。グランイルミで知られる公園やカフェが点在し、伊豆高原散策の拠点に。", maps:"伊豆高原"},
+ {name:"下田・ペリーロードと白浜大浜", area:"静岡県下田市", lat:34.680, lon:138.945, train:180, car:170, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["street","nature","food","walk"], desc:"開国の歴史が残る石畳のペリーロードと、白砂の白浜大浜海岸。南伊豆観光の王道コース。", maps:"ペリーロード 下田"},
+ {name:"堂ヶ島・天窓洞", area:"静岡県西伊豆町", lat:34.793, lon:138.773, train:190, car:175, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"天井の穴から光が差す青の洞窟「天窓洞」を遊覧船で巡る、西伊豆を代表する絶景。夕景も名高い。", maps:"堂ヶ島 天窓洞"},
+ {name:"土肥・黄金崎", area:"静岡県伊豆市", lat:34.660, lon:138.790, train:175, car:160, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","street"], desc:"夕日に染まる馬の形の岩「馬ロック」で知られる黄金崎と、世界最大の金塊がある土肥金山のエリア。", maps:"黄金崎 土肥"},
+ {name:"浄蓮の滝", area:"静岡県伊豆市", lat:34.873, lon:138.926, train:150, car:140, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk"], desc:"「天城越え」の歌で知られる、玄武岩の柱を流れ落ちる名瀑。わさび田が広がる清流の里にある。", maps:"浄蓮の滝"},
+ {name:"伊豆パノラマパーク（碧テラス）", area:"静岡県伊豆の国市", lat:35.032, lon:138.938, train:130, car:125, season:"ALL", weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["nature","street","solo"], desc:"ロープウェイで登る葛城山山頂の「碧テラス」から、富士山と駿河湾を一望する絶景スポット。", maps:"伊豆パノラマパーク 碧テラス"},
+ {name:"三嶋大社", area:"静岡県三島市", lat:35.123, lon:138.910, train:105, car:105, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","food","walk"], desc:"伊豆国一宮として知られる古社。源頼朝ゆかりの地で、参道周辺では三島うなぎや三島コロッケの食べ歩きも。", maps:"三嶋大社"},
+ {name:"沼津港深海水族館", area:"静岡県沼津市", lat:35.083, lon:138.856, train:115, car:110, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","nature","solo"], desc:"駿河湾の深海生物を集めた世界でも珍しい水族館。シーラカンスの冷凍標本が見どころで、沼津港グルメとセットで。", maps:"沼津港深海水族館"},
+ {name:"朝霧高原・田貫湖", area:"静岡県富士宮市", lat:35.408, lon:138.590, train:160, car:145, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","food","walk"], desc:"富士山の西麓に広がる高原と、逆さ富士で知られる田貫湖。道の駅朝霧高原のソフトクリームも名物。", maps:"朝霧高原 田貫湖"},
+ {name:"日本平・久能山東照宮", area:"静岡県静岡市", lat:34.978, lon:138.465, train:150, car:140, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","street","walk"], desc:"富士山と駿河湾を望む日本平の丘と、徳川家康を祀る国宝・久能山東照宮。静岡観光の王道。", maps:"日本平 久能山東照宮"},
+ {name:"三保の松原", area:"静岡県静岡市", lat:35.011, lon:138.521, train:160, car:150, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk","street"], desc:"羽衣伝説で知られる、富士山を望む松原の海岸。世界文化遺産の構成資産で、静岡を代表する景勝地。", maps:"三保の松原"},
+ {name:"清水港・ドリームプラザ", area:"静岡県静岡市", lat:35.010, lon:138.494, train:155, car:145, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["food","street"], desc:"清水港の商業施設で、寿司や海鮮グルメの集まるエリア。三保の松原と合わせて巡れる。", maps:"清水港 ドリームプラザ"},
+ {name:"浜名湖・舘山寺温泉", area:"静岡県浜松市", lat:34.762, lon:137.617, train:165, car:175, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","onsen","food","walk"], desc:"うなぎで知られる浜名湖と、その湖畔の舘山寺温泉。遊覧船やロープウェイで湖の景色を楽しめる。", maps:"浜名湖 舘山寺"},
+ {name:"掛川花鳥園", area:"静岡県掛川市", lat:34.807, lon:138.052, train:150, car:160, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["nature","solo","walk"], desc:"花と鳥とふれあえる全天候型のテーマパーク。ハシビロコウやペンギンに会える、掛川の人気スポット。", maps:"掛川花鳥園"},
+ // 山梨
+ {name:"甲府城・武田神社", area:"山梨県甲府市", lat:35.665, lon:138.570, train:125, car:120, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","walk"], desc:"甲府駅近くの甲府城（舞鶴城公園）と、武田信玄を祀る武田神社。甲府観光の基本コース。", maps:"甲府城 武田神社"},
+ {name:"身延山久遠寺", area:"山梨県身延町", lat:35.382, lon:138.426, train:165, car:150, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","nature","walk"], desc:"日蓮宗の総本山。287段の石段「菩提梯」の先にある荘厳な伽藍と、しだれ桜でも知られる名刹。", maps:"身延山久遠寺"},
+ {name:"サントリー白州蒸溜所", area:"山梨県北杜市", lat:35.824, lon:138.291, train:165, car:155, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["street","food","solo"], desc:"南アルプスの天然水に育まれたウイスキーの蒸溜所。森の中の見学ツアーと試飲が大人の楽しみ（要予約の回あり）。", maps:"サントリー白州蒸溜所"},
+ {name:"尾白川渓谷", area:"山梨県北杜市", lat:35.913, lon:138.290, train:175, car:160, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","hike"], desc:"甲斐駒ヶ岳のふもとを流れる、エメラルドグリーンの清流の渓谷。千ヶ淵など透明度の高い淵が続く。", maps:"尾白川渓谷"},
+ {name:"北口本宮冨士浅間神社", area:"山梨県富士吉田市", lat:35.473, lon:138.795, train:140, car:130, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","nature"], desc:"富士山登拝の起点だった古社。杉並木の参道と大きな鳥居が神秘的で、新倉浅間神社と合わせて巡れる。", maps:"北口本宮冨士浅間神社"},
+ // 長野
+ {name:"白馬岩岳マウンテンリゾート", area:"長野県白馬村", lat:36.722, lon:137.857, train:200, car:190, season:["spring","summer","autumn"], weather:["sunny"], rainOk:false, hot:true, cold:false, cat:["nature","hike","walk"], desc:"ゴンドラで登る山頂テラス「白馬マウンテンハーバー」から北アルプスを望む、白馬の人気スポット。", maps:"白馬岩岳マウンテンリゾート"},
+ {name:"別所温泉", area:"長野県上田市", lat:36.352, lon:138.159, train:165, car:165, season:"ALL", weather:"ALLW", rainOk:true, hot:false, cold:false, cat:["onsen","street"], desc:"信州最古といわれる温泉地。北向観音や安楽寺八角三重塔など「信州の鎌倉」と呼ばれる寺巡りとセットで。", maps:"別所温泉"},
+ {name:"小諸城址・懐古園", area:"長野県小諸市", lat:36.327, lon:138.417, train:150, car:155, season:["spring","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","walk","kouyou"], peaks:[{type:"kouyou",start:"11-05",end:"11-18"}], desc:"城郭が城下町より低い場所にある珍しい「穴城」の跡。紅葉の名所で、小諸の城下町散策と合わせて。", maps:"懐古園 小諸"},
+ {name:"志賀高原", area:"長野県山ノ内町", lat:36.720, lon:138.510, train:195, car:190, season:["spring","summer","autumn"], weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","hike"], desc:"大小の湖沼と湿原が点在する日本最大級の高原リゾート。横手山や東館山からの眺望と高山植物が魅力。", maps:"志賀高原"},
+ // 千葉
+ {name:"香取神宮", area:"千葉県香取市", lat:35.887, lon:140.529, train:150, car:130, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","nature","walk"], desc:"下総国一宮として知られる古社。朱塗りの楼門と杉木立の参道が見事で、佐原の町並みと合わせて巡れる。", maps:"香取神宮"},
+ {name:"九十九里浜", area:"千葉県九十九里町", lat:35.550, lon:140.420, train:140, car:120, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:true, cold:false, cat:["nature","walk","food"], desc:"全長約66kmの日本最大級の砂浜海岸。片貝周辺は海の駅や海鮮グルメもあり、ドライブの定番。", maps:"九十九里浜 片貝"},
+ {name:"野島崎", area:"千葉県南房総市", lat:34.899, lon:139.790, train:190, car:165, season:"ALL", weather:["sunny"], rainOk:false, hot:false, cold:false, cat:["nature","walk"], desc:"房総半島の最南端に立つ白い灯台。ベンチに座って太平洋の大パノラマを眺められる絶景スポット。", maps:"野島崎灯台"},
+ {name:"館山城・城山公園", area:"千葉県館山市", lat:34.983, lon:139.856, train:180, car:155, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","nature","walk"], desc:"里見八犬伝ゆかりの館山城を復元した城山公園。園内からは館山湾を一望でき、散策にも良い。", maps:"館山城 城山公園"},
+ {name:"富津岬", area:"千葉県富津市", lat:35.312, lon:139.786, train:120, car:105, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["nature","walk"], desc:"東京湾に突き出す岬と、明治百年記念展望塔からの眺めが名物。干潟の形が上空から見えることでも知られる。", maps:"富津岬"},
+ {name:"佐倉城址公園", area:"千葉県佐倉市", lat:35.722, lon:140.219, train:105, car:95, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","walk","garden"], desc:"佐倉城の跡を整備した公園で、国立歴史民俗博物館のおひざ元。桜と城址の散策が楽しめる。", maps:"佐倉城址公園"},
+ {name:"千葉ポートタワー・千葉城", area:"千葉市中央区", lat:35.600, lon:140.099, train:85, car:80, season:"ALL", weather:["sunny","cloudy"], rainOk:false, hot:false, cold:false, cat:["street","walk"], desc:"千葉港を見渡すポートタワーと、千葉氏の居城跡に建つ千葉城（郷土博物館）。千葉市観光の基本スポット。", maps:"千葉ポートタワー"}
+];
+NEW_SPOTS12.forEach(s=>{
+  if(s.season === "ALL") s.season = ["spring","summer","autumn","winter"];
+  if(s.weather === "ALLW") s.weather = ["sunny","cloudy","rain","snow"];
+});
+
+SPOTS.push(...NEW_SPOTS12);
+
+
 
 
 
