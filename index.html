@@ -1031,9 +1031,8 @@ function estimateMinutes(spot, mode){
   if(base === null || base === undefined) return null;
   const distOrigin = haversine(origin.lat, origin.lon, spot.lat, spot.lon);
   const distDefault = haversine(DEFAULT_ORIGIN.lat, DEFAULT_ORIGIN.lon, spot.lat, spot.lon);
-  if(distDefault < 1) return base;
-  const speedFactor = base / distDefault;
-  return Math.max(10, Math.round(distOrigin * speedFactor / 5) * 5);
+  const ratio = (distOrigin + 20) / (distDefault + 20);
+  return Math.max(10, Math.round(base * ratio / 5) * 5);
 }
 
 let state = { transport:"train", buckets:[0,1], moods:new Set(), keyword:"" };
