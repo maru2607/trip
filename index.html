@@ -1032,7 +1032,14 @@ function estimateMinutes(spot, mode){
   const distOrigin = haversine(origin.lat, origin.lon, spot.lat, spot.lon);
   const distDefault = haversine(DEFAULT_ORIGIN.lat, DEFAULT_ORIGIN.lon, spot.lat, spot.lon);
   const ratio = (distOrigin + 20) / (distDefault + 20);
-  return Math.max(10, Math.round(base * ratio / 5) * 5);
+  let est = Math.max(10, Math.round(base * ratio / 5) * 5);
+  const originShift = haversine(origin.lat, origin.lon, DEFAULT_ORIGIN.lat, DEFAULT_ORIGIN.lon);
+  if(originShift > 3 && distOrigin < 15){
+    const pace = mode === "car" ? 2.5 : 3.5;
+    const cap = Math.max(10, Math.round(distOrigin * pace / 5) * 5);
+    if(cap < est) est = cap;
+  }
+  return est;
 }
 
 let state = { transport:"train", buckets:[0,1], moods:new Set(), keyword:"" };
